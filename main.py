@@ -41,12 +41,12 @@ def is_list_of_primes(lst):
 
 
 def get_longest_all_primes(lst):
+    """
+        Determines the longest sub-sequence of primes for 'lst' list.
+        :param lst: The input list of numbers.
+        :return: The longest sub-sequence of primes if exits, [] otherwise.
+    """
     return get_longest_subsequence_with_property(lst, is_list_of_primes)
-    """
-    Determines the longest sub-sequence of primes for 'lst' list.
-    :param lst: The input list of numbers.
-    :return: The longest sub-sequence of primes if exits, [] otherwise.
-    """
 
 
 def test_get_longest_all_primes():
@@ -88,9 +88,44 @@ def test_get_longest_average_below():
     assert get_longest_average_below([1, 9, 2, 8, 3, 7, 4, 6, 5, 5], 5.0) == [1, 9, 2, 8, 3, 7, 4, 6, 5, 5]
 
 
+def all_elements_divisible_with_factor(lst, k):
+    for element in lst:
+        if element % k != 0:
+            return False
+    return True
+
+
+def test_all_elements_divisible_with_factor():
+    assert all_elements_divisible_with_factor([2, 4, 6], 2) is True
+    assert all_elements_divisible_with_factor([], 2) is True
+    assert all_elements_divisible_with_factor([2, 4, 6], 3) is False
+
+
+def get_longest_div_k(lst, factor):
+    '''
+    Finds the longest subsequence where all elements are divisible with factor 'factor'.
+    :param lst: Input lst of integers.
+    :param factor: The factor to test divisibility against.
+    :return: The longest subsequence where all elements are divisible with factor 'factor' if exists, [] otherwise.
+    '''
+    return get_longest_subsequence_with_property(lst,
+                                                 (lambda l_list: all_elements_divisible_with_factor(l_list, factor)))
+
+
+def test_get_longest_div_k():
+    assert get_longest_div_k([], 2) == []
+    assert get_longest_div_k([2], 2) == [2]
+    assert get_longest_div_k([2, 4, 6, 8, 12, 18], 2) == [2, 4, 6, 8, 12, 18]
+    assert get_longest_div_k([2, 4, 6, 8, 12, 18], 3) == [12, 18]
+    assert get_longest_div_k([2, 4, 6, 8, 12, 18], 4) == [8, 12]
+    assert get_longest_div_k([2, 4, 6, 8, 12, 18], 5) == []
+
+
 def test_all():
+    test_all_elements_divisible_with_factor()
     test_get_longest_all_primes()
     test_get_longest_average_below()
+    test_get_longest_div_k()
 
 
 test_all()
@@ -101,7 +136,8 @@ def show_options():
     1.Read input list elements.
     2.Find longest sub-sequence of primes.
     3.Find longest sub-sequence of elements with average below threshold(inclusive).
-    4.Exit the interactive menu.
+    4.Find longest sub-sequence of elements divisible with a given factor.
+    5.Exit the interactive menu.
     ''')
 
 
@@ -120,8 +156,13 @@ def show_longest_of_primes(lst):
 
 def show_longest_below_average(lst):
     avg_threshold = float(input("Average threshold is:"))
-    print(f"Longest subsequence of number below average {avg_threshold} "
+    print(f"Longest subsequence of numbers below average {avg_threshold} "
           f"is:{get_longest_average_below(lst, avg_threshold)}.")
+
+
+def show_longest_of_divisible_with_factor(lst):
+    factor = int(input("Divisibility factor is:"))
+    print(f"Longest subsequence of numbers divisible with factor {factor} is: {get_longest_div_k(lst, factor)}")
 
 
 def interactive_menu():
@@ -136,6 +177,8 @@ def interactive_menu():
         elif option == '3':
             show_longest_below_average(lst_data)
         elif option == "4":
+            show_longest_of_divisible_with_factor(lst_data)
+        elif option == "5":
             break
         else:
             print("Unknown option, try again.")
